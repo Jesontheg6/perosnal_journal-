@@ -5,6 +5,7 @@ import {
   ActivityIndicator,
   Text
 } from 'react-native';
+import navStyles from '../../styles/navStyles';
 import Posts from './Posts'
 import PostForm from './PostForm'
 import {graphql} from 'react-apollo';
@@ -12,6 +13,13 @@ import gql from 'graphql-tag';
 
 
 class NewPost extends Component {
+	static navigationOptions = ({navigation}) => {
+		return{
+    title: "New Post",
+    ...navStyles
+  	};
+  };
+
 	state = {
 		loading: false
 	}
