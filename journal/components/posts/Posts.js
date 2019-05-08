@@ -1,46 +1,58 @@
 import React, { Component } from 'react';
 import {
-	Text,
+  Text,
   StyleSheet,
   FlatList,
+  ActivityIndicator,
   View
 } from 'react-native';
 import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
+import {List, ListItem, Body, Right, Icon} from "native-base";
+
 
 class Posts extends Component {
   render() {
-  	const {loading,allPosts,navigation} = this.props;
-  	if (loading) return null;
-  	console.log(allPosts)
+    const {loading, allPosts, navigation} = this.props;
+    if (loading) return <ActivityIndicator size="large"/>;;
+    console.log(allPosts)
     return (
       <View>
+      <List>
        <FlatList
         data={allPosts}
         renderItem={({item}) =>  (
-        	<Text onPress = {() => 
-        		navigation.navigate("Post", {
-        		id: item.id
-        	})
+          <ListItem
+           onPress = {() => 
+            navigation.navigate("Post", {
+            id: item.id,
+            title: item.title 
+          })
         }
        >
-        	{item.title} 
-        	</Text>
-        	)}
+          <Body>
+            <Text> {item.title} </Text>
+          </Body>
+          <Right>
+            <Icon name="arrow-forward"/>
+          </Right>
+          </ListItem>
+          )}
        keyExtractor={item => item.id}
       />
+      </List>
       </View>
     );
   }
 }
 
 const postsQuery = gql`
-{
-  allPosts {
-    id
-    title 
+  query postsQuery {
+    allPosts {
+     id
+     title 
+   }
   }
-}
 `;
 
 const styles = StyleSheet.create({
@@ -48,5 +60,5 @@ const styles = StyleSheet.create({
 });
 
 export default graphql(postsQuery, {
-	props: ({data}) => ({...data})
+  props: ({data}) => ({...data})
 })(Posts);

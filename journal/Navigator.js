@@ -5,6 +5,7 @@ import Posts from './components/posts/Posts';
 import NewPost from './components/posts/NewPost';
 import navStyles from './styles/navStyles';
 import {createStackNavigator, createAppContainer, button} from 'react-navigation';
+import { Fab,Icon} from 'native-base'
 
 class Home extends React.Component {
   static navigationOptions = {
@@ -27,9 +28,12 @@ class Home extends React.Component {
     return (
         <View style={styles.container}>
           <Posts {...this.props} />
-          <TouchableHighlight onPress={this.newPost} style={styles.newPost}>
-          	<Text style={styles.newPostTexts}> New Post + </Text>
-          </TouchableHighlight> 
+          <Fab
+            onPress={this.newPost}
+            tyle={styles.newPost}
+          >
+            <Icon name="add" />
+          </Fab>
         </View> 
     );
   }
@@ -42,12 +46,7 @@ const styles = StyleSheet.create({
   },
   newPost: {
   	backgroundColor: "#82D8D8",
-  	padding: 20
   },
-  newPostTexts: {
-  	fontSize: 20,
-  	textAlign: "center"
-  }
 });
 
 

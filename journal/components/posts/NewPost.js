@@ -2,20 +2,46 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
+  ActivityIndicator,
   Text
 } from 'react-native';
+import Posts from './Posts'
 import PostForm from './PostForm'
+import {graphql} from 'react-apollo';
+import gql from 'graphql-tag';
+
 
 class NewPost extends Component {
+	state = {
+		loading: false
+	}
 
 	newPost = ({title, body}) => {
-		console.log(title,body)
+		const {newPost, navigation} = this.props;
+		this.setState({loading: true});
+		this.props
+		.newPost({
+			variables: {
+				title,
+				body
+			}
+		})
+		.then(() => {
+			navigation.goBack();
+		})
+		.catch(error => {
+			console.log(error);
+		});
 	};
 	
   render() {
     return (
     	<View>
-    		<PostForm onSubmit={this.newPost}/>
+    	{this.state.loading ? (
+    			<ActivityIndicator size="large" />
+    		) : (
+    			<PostForm onSubmit={this.newPost}/>
+    	)}
       </View>
     );
   }
@@ -25,5 +51,17 @@ const styles = StyleSheet.create({
 
 });
 
-
-export default NewPost;
+const newPost = gql `
+ mutation newPost($title: String!, $body: String!){
+ 	createPost(title: $title, body: $body) {
+ 		id
+ 	}
+ }
+`;
+export default graphql(newPost, {
+	name: "newPost",
+	options: {
+    errorPolicy: 'ignore',
+		refetchQueries: ["postsQuery"]
+	}
+})(NewPost);
