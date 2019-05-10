@@ -1,11 +1,17 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableHighlight } from 'react-native';
+import { StyleSheet, View,ActivityIndicator, Text, TouchableHighlight, Button } from 'react-native';
 import Post from './components/posts/Post';
 import Posts from './components/posts/Posts';
 import NewPost from './components/posts/NewPost';
+import UpdatePost from './components/posts/UpdatePost';
 import navStyles from './styles/navStyles';
-import {createStackNavigator, createAppContainer, button} from 'react-navigation';
-import { Fab,Icon} from 'native-base'
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import {Fab,Icon} from 'native-base'
+import Login from './components/user/Login'
+import {graphql} from 'react-apollo';
+import gql from 'graphql-tag';
+import {signOut} from './loginUtils'
+import {withApollo} from 'react-apollo'
 
 class Home extends React.Component {
   static navigationOptions = {
@@ -28,11 +34,17 @@ class Home extends React.Component {
     return (
         <View style={styles.container}>
           <Posts {...this.props} />
+          <Button
+          onPress = {()=> { 
+            signOut();
+          this.props.client.resetStore();
+          }}
+          title = "Logout"/>
           <Fab
             onPress={this.newPost}
-            tyle={styles.newPost}
+            style={styles.newPost}
           >
-            <Icon name="add" />
+            <Icon name="ios-add-circle" />
           </Fab>
         </View> 
     );
@@ -46,20 +58,43 @@ const styles = StyleSheet.create({
   },
   newPost: {
   	backgroundColor: "#82D8D8",
-  },
+  }
 });
-
 
 const AppNavigator = createStackNavigator({
     Home:{
-      screen:Home
+      screen: withApollo(Home)
     },
     Post:{
       screen: Post
     },
     NewPost: {
     	screen: NewPost
+    },
+    UpdatePost: {
+      screen: UpdatePost
     }
   });
 
-export default createAppContainer(AppNavigator);
+const App = createAppContainer(AppNavigator);
+
+const NavWrapper = ({loading , user}) => {
+if (loading) return <ActivityIndicator size="large"/>;;
+if (!user) return <Login />
+  return <App screenProps={{user}}/>
+}
+
+const userQuery = gql `
+  query userQuery {
+   user {
+      id 
+      email
+      posts(orderBy: createdAt_DESC) {
+        id
+        title
+      }
+    }
+  }
+`
+
+export default graphql(userQuery, { props:({data}) => ({...data})})(NavWrapper);

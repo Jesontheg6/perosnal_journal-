@@ -10,11 +10,14 @@ import navStyles from '../../styles/navStyles';
 import {Form, Item, Input, Label} from "native-base";
 
 export default class PostForm extends Component {
+  static defaultProps = {
+    post: {}
+  };
 
 	state = {
-		title: "",
-		body: ""
-	}
+		title: this.props.post.title || "",
+		body: this.props.post.body || ""
+  	}; 
 
 	submitForm = () => {
 		this.props.onSubmit({
@@ -22,6 +25,7 @@ export default class PostForm extends Component {
 			body: this.state.body
 		});
 	};
+
   render() {
     return (
     	<Form>

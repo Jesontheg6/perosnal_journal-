@@ -13,31 +13,31 @@ import gql from 'graphql-tag';
 
 
 class NewPost extends Component {
-	static navigationOptions = ({navigation}) => {
-		return{
+	static navigationOptions = {
     title: "New Post",
     ...navStyles
   	};
-  };
 
 	state = {
 		loading: false
 	}
 
 	newPost = ({title, body}) => {
-		const {newPost, navigation} = this.props;
+		const {newPost, navigation, screenProps} = this.props;
 		this.setState({loading: true});
-		this.props
-		.newPost({
+		newPost({
 			variables: {
 				title,
-				body
+				body,
+				userId: screenProps.user.id
 			}
 		})
 		.then(() => {
 			navigation.goBack();
+			this.setState({loading: false});
 		})
 		.catch(error => {
+			this.setState({loading: false});
 			console.log(error);
 		});
 	};
@@ -55,21 +55,23 @@ class NewPost extends Component {
   }
 }
 
+
 const styles = StyleSheet.create({
 
 });
 
 const newPost = gql `
- mutation newPost($title: String!, $body: String!){
- 	createPost(title: $title, body: $body) {
+ mutation newPost($title: String!, $body: String!, $userId: ID!){
+ 	createPost(title: $title, body: $body, userId: $userId) {
  		id
  	}
  }
 `;
+
 export default graphql(newPost, {
 	name: "newPost",
 	options: {
     errorPolicy: 'ignore',
-		refetchQueries: ["postsQuery"]
+		refetchQueries: ["userQuery"]
 	}
 })(NewPost);

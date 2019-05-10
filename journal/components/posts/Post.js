@@ -4,6 +4,7 @@ import navStyles from '../../styles/navStyles';
 import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
 import Posts from './Posts';
+import {Fab,Icon} from 'native-base'
 
 class Post extends Component {
 	static navigationOptions = ({navigation}) => {
@@ -13,6 +14,14 @@ class Post extends Component {
   	};
   };
 
+  updatePost = () => {
+  	const {Post} = this.props;
+  	this.props.navigation.navigate("UpdatePost", {
+           id: Post.id,
+           title: Post.title 
+       });
+  	};
+
 	render() {
 		console.log(this.props);
 		const {Post, allPosts,loading} = this.props
@@ -20,6 +29,12 @@ class Post extends Component {
 		return (
 			<View style={styles.container}>
 				<Text style={styles.bodyText}> {this.props.Post.body} </Text>
+				<Fab
+            onPress={this.updatePost}
+            style={styles.updatePost}
+          >
+            <Icon name="ios-create" />
+         </Fab>
 			</View>
 		);
 	}
@@ -27,11 +42,15 @@ class Post extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 20
+		padding: 20,
+		flex: 1
 	},
 	bodyText: {
 		fontSize: 16
-	}
+	},
+	 UpdatePost: {
+  	backgroundColor: "#82D8D8"
+  }
 });
 
 
