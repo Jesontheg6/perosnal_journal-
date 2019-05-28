@@ -8,11 +8,13 @@ import {
 import NewPost from './NewPost'
 import navStyles from '../../styles/navStyles';
 import {Form, Item, Input, Label} from "native-base";
+import dismissKeyboard from 'react-native-dismiss-keyboard';
 
 export default class PostForm extends Component {
   static defaultProps = {
     post: {}
   };
+
 
 	state = {
 		title: this.props.post.title || "",
@@ -25,6 +27,12 @@ export default class PostForm extends Component {
 			body: this.state.body
 		});
 	};
+
+  handleKeyDown = (e) => {
+    if(e.nativeEvent.key == "Enter"){
+        dismissKeyboard();
+    }
+}
 
   render() {
     return (
@@ -43,6 +51,7 @@ export default class PostForm extends Component {
         style={styles.body}
         onChangeText={body => this.setState({body})}
         value={this.state.body} 
+        onKeyPress={this.handleKeyDown}
         />
         </Item>
     		<Button title="Save Post" onPress={this.submitForm} />
