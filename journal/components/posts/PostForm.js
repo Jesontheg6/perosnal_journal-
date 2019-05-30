@@ -9,6 +9,8 @@ import NewPost from './NewPost'
 import navStyles from '../../styles/navStyles';
 import {Form, Item, Input, Label} from "native-base";
 import dismissKeyboard from 'react-native-dismiss-keyboard';
+import { decryptData } from '../../helpers';
+
 
 export default class PostForm extends Component {
   static defaultProps = {
@@ -17,8 +19,8 @@ export default class PostForm extends Component {
 
 
 	state = {
-		title: this.props.post.title || "",
-		body: this.props.post.body || ""
+		title: decryptData(this.props.post.title) || "",
+		body: decryptData(this.props.post.body) || ""
   	}; 
 
 	submitForm = () => {

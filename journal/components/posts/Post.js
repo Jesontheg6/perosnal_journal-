@@ -5,7 +5,7 @@ import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
 import Posts from './Posts';
 import {Fab,Icon} from 'native-base'
-
+import { decryptData } from '../../helpers';
 class Post extends Component {
 	static navigationOptions = ({navigation}) => {
 		return{
@@ -28,7 +28,7 @@ class Post extends Component {
 		if (loading) return <ActivityIndicator size="large"/>;
 		return (
 			<View style={styles.container}>
-				<Text style={styles.bodyText}> {this.props.Post.body} </Text>
+				<Text style={styles.bodyText}> { decryptData(this.props.Post.body)} </Text>
 				<Fab
             onPress={this.updatePost}
             style={styles.updatePost}

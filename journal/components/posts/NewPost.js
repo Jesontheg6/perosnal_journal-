@@ -10,20 +10,7 @@ import Posts from './Posts'
 import PostForm from './PostForm'
 import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
-import {RSA, RSAKeychain} from 'react-native-rsa-native';
-
-// var Aes = NativeModules.Aes
- 
-// const generateKey = (password, salt, cost, length) => Aes.pbkdf2(password, salt, cost, length)
- 
-// const encrypt = (text, keyBase64) => {
-//     return Aes.randomKey(32).then(iv => {
-//         return Aes.encrypt(text, keyBase64, iv).then(cipher => ({
-//             cipher,
-//             iv,
-//         }))
-//     })
-// }
+import { encryptData } from '../../helpers/index';
 
 class NewPost extends Component {
 	static navigationOptions = {
@@ -41,8 +28,8 @@ class NewPost extends Component {
 		// let encryptedPost = encrypt(body, generateKey("12345", ""))
 		newPost({
 			variables: {
-				title,
-				body,
+				title: encryptData(title),
+				body: encryptData(body), 
 				userId: screenProps.user.id
 			}
 		})

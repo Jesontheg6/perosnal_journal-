@@ -10,7 +10,7 @@ import {List, ListItem, Body, Right, Icon} from "native-base";
 import {graphql, compose} from 'react-apollo';
 import gql from 'graphql-tag';
 import Swipeout from 'react-native-swipeout';
-
+import { decryptData } from '../../helpers';
 
 
 class Posts extends Component {
@@ -82,12 +82,12 @@ class Posts extends Component {
            onPress = {() => 
             navigation.navigate("Post", {
             id: item.id,
-            title: item.title 
+            title: decryptData(item.title)
           })
         }
        >
           <Body>
-            <Text> {item.title} </Text>
+            <Text> { decryptData(item.title)} </Text>
           </Body>
           <Right>
             <Icon name="ios-arrow-forward"/>
