@@ -18,7 +18,6 @@ export default (WrappedComponent) => (
         }
 
         async componentDidMount() {
-            console.log("Crypto middleware did mount");
             await this.updatePassphrase();
         }
 
