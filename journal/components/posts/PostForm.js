@@ -9,22 +9,22 @@ import NewPost from './NewPost'
 import navStyles from '../../styles/navStyles';
 import {Form, Item, Input, Label} from "native-base";
 import dismissKeyboard from 'react-native-dismiss-keyboard';
-
-export default class PostForm extends Component {
+import withCrypto from '../../cryptoMiddleware';
+class PostForm extends Component {
   static defaultProps = {
     post: {}
   };
 
 
 	state = {
-		title: this.props.post.title || "",
-		body: this.props.post.body || ""
+		title: this.props.decryptData(this.props.post.title) || "",
+		body: this.props.decryptData(this.props.post.body) || ""
   	}; 
 
 	submitForm = () => {
 		this.props.onSubmit({
-			title: this.state.title,
-			body: this.state.body
+			title: this.props.encryptData(this.state.title),
+			body: this.props.encryptData(this.state.body)
 		});
 	};
 
@@ -66,3 +66,6 @@ const styles = StyleSheet.create({
   	textAlignVertical: "top"
   }
 });
+
+
+export default withCrypto(PostForm);

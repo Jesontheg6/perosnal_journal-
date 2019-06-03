@@ -5,6 +5,7 @@ import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
 import Posts from './Posts';
 import {Fab,Icon} from 'native-base'
+import withCrypto from '../../cryptoMiddleware';
 
 class Post extends Component {
 	static navigationOptions = ({navigation}) => {
@@ -23,12 +24,12 @@ class Post extends Component {
   	};
 
 	render() {
-		console.log(this.props);
-		const {Post, allPosts,loading} = this.props
+		const { loading, decryptData } = this.props;
+		
 		if (loading) return <ActivityIndicator size="large"/>;
 		return (
 			<View style={styles.container}>
-				<Text style={styles.bodyText}> {this.props.Post.body} </Text>
+				<Text style={styles.bodyText}> { decryptData(this.props.Post.body) } </Text>
 				<Fab
             onPress={this.updatePost}
             style={styles.updatePost}
@@ -72,4 +73,4 @@ export default graphql(postQuery, {
     	id: navigation.state.params.id
     }
 	})
-})(Post);
+})(withCrypto(Post));

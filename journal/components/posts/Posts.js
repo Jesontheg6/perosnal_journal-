@@ -3,7 +3,7 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  ActivityIndicator,
+  Alert,
   View
 } from 'react-native';
 import {List, ListItem, Body, Right, Icon} from "native-base";
@@ -11,7 +11,6 @@ import {graphql, compose} from 'react-apollo';
 import gql from 'graphql-tag';
 import Swipeout from 'react-native-swipeout';
 import withCrypto from '../../cryptoMiddleware';
-
 
 class Posts extends Component {
   constructor(props) {
@@ -22,22 +21,24 @@ class Posts extends Component {
     };
   }
 
+  setPosts = (posts) => {
+    const { decryptData } = this.props;
+    if (!posts) return [];
+    const decryptedPosts = posts.map(item => {
+      return { ...item, title: decryptData(item.title) };
+    }).filter(item => item.title);
+    if (decryptedPosts.length !== posts.length) Alert.alert("Error", "Some data could not be decrypted. Please, check your passphrase.");
+    this.setState({ posts: decryptedPosts });
+  }
+
   componentDidMount() {
-    const { screenProps } = this.props;
-    console.log(screenProps.user.posts);
-    this.setState({
-      posts: screenProps.user.posts,
-    })
+    const { screenProps: { user: { posts }} } = this.props;
+    if (posts) this.setPosts(posts);
   }
 
   componentWillReceiveProps(nextProps) {
-    const { screenProps } = this.props;
-        console.log(nextProps.screenProps.user.posts);
-    if (nextProps.screenProps.user.posts !== screenProps.user.posts) {
-      this.setState({
-        posts: nextProps.screenProps.user.posts,
-      })
-    }
+    const { screenProps: { user: { posts }} } = nextProps;
+    if (posts) this.setPosts(nextProps.screenProps.user.posts);
   }
 
   deletePost = (id) => {
