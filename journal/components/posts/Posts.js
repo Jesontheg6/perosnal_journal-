@@ -125,3 +125,4 @@ export default compose(
   }
 })
 )(withCrypto(Posts))
+
