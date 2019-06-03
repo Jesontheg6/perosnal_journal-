@@ -10,7 +10,7 @@ import {List, ListItem, Body, Right, Icon} from "native-base";
 import {graphql, compose} from 'react-apollo';
 import gql from 'graphql-tag';
 import Swipeout from 'react-native-swipeout';
-
+import withCrypto from '../../cryptoMiddleware';
 
 
 class Posts extends Component {
@@ -75,7 +75,7 @@ class Posts extends Component {
         data={this.state.posts}
         renderItem={({item}) =>  (
         <Swipeout right={swipeBtns(item.id)}
-        autoClose='true'
+        autoClose={true}
         id={item.id}
         backgroundColor= 'transparent'>
           <ListItem
@@ -123,4 +123,4 @@ export default compose(
     refetchQueries: ["postsQuery"]
   }
 })
-)(Posts)
+)(withCrypto(Posts))
