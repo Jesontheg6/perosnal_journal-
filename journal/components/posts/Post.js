@@ -9,6 +9,7 @@ import withCrypto from '../../cryptoMiddleware';
 
 class Post extends Component {
 	static navigationOptions = ({navigation}) => {
+		console.log("Navigate =>", navigation.state.params.title);
 		return{
     title: navigation.state.params.title,
     ...navStyles
