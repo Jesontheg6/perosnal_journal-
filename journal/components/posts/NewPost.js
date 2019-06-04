@@ -23,13 +23,13 @@ class NewPost extends Component {
 	}
 
 	newPost = ({title, body}) => {
-		const {newPost, navigation, screenProps, encryptData} = this.props;
+		const {newPost, navigation, screenProps, encryptData } = this.props;
 		this.setState({loading: true});
 		// let encryptedPost = encrypt(body, generateKey("12345", ""))
 		newPost({
 			variables: {
-				title: title,
-				body: body,
+				title: encryptData(title),
+				body: encryptData(body),
 				userId: screenProps.user.id
 			}
 		})

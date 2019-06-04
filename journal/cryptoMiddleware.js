@@ -6,6 +6,8 @@ import { encrypt, decrypt } from './helpers/crypto';
 
 export default (WrappedComponent) => (
     class extends Component {
+        static navigationOptions = WrappedComponent.navigationOptions;
+
         state = {
             loading: true,
         }
