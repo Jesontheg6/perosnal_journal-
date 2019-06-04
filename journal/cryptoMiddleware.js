@@ -19,6 +19,11 @@ export default (WrappedComponent) => (
             this.setState({ loading: false });
         }
 
+        clearPassphrase = async () => { // will called when app detect incorrect passphrase
+            await AsyncStorage.removeItem("passphrase");
+            this.setState({ passphrase: false });
+        }
+
         async componentDidMount() {
             await this.updatePassphrase();
         }
@@ -38,7 +43,12 @@ export default (WrappedComponent) => (
         render() {
             if (this.state.loading) return <Loading />
             if (!this.state.passphrase) return <SetPassphrase updatePassphrase={this.updatePassphrase} />
-            return <WrappedComponent {...this.props} encryptData={this.encryptData} decryptData={this.decryptData} />
+            return <WrappedComponent 
+                        {...this.props} 
+                        encryptData={this.encryptData} 
+                        decryptData={this.decryptData} 
+                        clearPassphrase={this.clearPassphrase}
+                    />
         }
     }
 )

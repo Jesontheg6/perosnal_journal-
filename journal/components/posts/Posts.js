@@ -22,12 +22,15 @@ class Posts extends Component {
   }
 
   setPosts = (posts) => {
-    const { decryptData } = this.props;
+    const { decryptData, clearPassphrase } = this.props;
     if (!posts) return [];
     const decryptedPosts = posts.map(item => {
       return { ...item, title: decryptData(item.title) };
     }).filter(item => item.title);
-    if (decryptedPosts.length !== posts.length) Alert.alert("Error", "Some data could not be decrypted. Please, check your passphrase.");
+    if (decryptedPosts.length !== posts.length) {
+      Alert.alert("Error", "Some data could not be decrypted. Please, check your passphrase.");
+      clearPassphrase();
+    }
     this.setState({ posts: decryptedPosts });
   }
 
