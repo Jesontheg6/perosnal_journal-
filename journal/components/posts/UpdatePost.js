@@ -10,7 +10,7 @@ import Posts from './Posts'
 import PostForm from './PostForm'
 import {graphql, compose} from 'react-apollo';
 import gql from 'graphql-tag';
-
+import { encryptData } from '../../helpers';
 
 class UpdatePost extends Component {
 	static navigationOptions = {
@@ -28,8 +28,8 @@ class UpdatePost extends Component {
 		updatePost({
 			variables: {
 				id: this.props.Post.id, 
-				title,
-				body,
+				title: encryptData(title),
+				body: encryptData(body),
 				userId: screenProps.user.id
 			}
 		})

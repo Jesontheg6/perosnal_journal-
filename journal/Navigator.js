@@ -1,9 +1,10 @@
-import React from 'react';
-import { StyleSheet, View,ActivityIndicator, Text, TouchableHighlight, Button } from 'react-native';
+import React, { Component } from 'react';
+import { StyleSheet, View,ActivityIndicator, Text, TouchableHighlight, Button, AsyncStorage } from 'react-native';
 import Post from './components/posts/Post';
 import Posts from './components/posts/Posts';
 import NewPost from './components/posts/NewPost';
 import UpdatePost from './components/posts/UpdatePost';
+import SetPassphrase from './components/SetPassphrase';
 import navStyles from './styles/navStyles';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import {Fab,Icon} from 'native-base'
@@ -12,8 +13,31 @@ import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
 import {signOut} from './loginUtils'
 import {withApollo} from 'react-apollo'
-
+import Loading from './components/loading';
 class Home extends React.Component {
+  state = {
+    passphrase: false,
+    loading: true
+  }
+  
+  async componentDidMount() {
+    if (global.secretKey) return this.setState({ passphrase: true, loading: false })
+    
+    AsyncStorage.getItem("secretKey").then(passphrase => {
+      if (passphrase) {
+        global.secretKey = passphrase; 
+        this.setState({passphrase: true, loading: false})
+      } else {
+        this.setState({ loading: false })
+      }
+    })
+  }
+
+  setPassphrase = (passphrase) => {
+    global.secretKey = passphrase;
+    this.setState({ passphrase: true })
+  }
+
   static navigationOptions = {
     title: 'Home',
     ...navStyles
@@ -31,13 +55,14 @@ class Home extends React.Component {
 
 
  render() {
-    return (
-        <View style={styles.container}>
+   if (this.state.loading) return <Loading />
+   return (
+        (!this.state.passphrase) ? <SetPassphrase action={this.setPassphrase}/> :
+        <View style={styles.container}> 
           <Posts {...this.props} />
           <Button
           onPress = {()=> { 
-            signOut();
-          this.props.client.resetStore();
+            signOut().then(res => this.props.client.resetStore());
           }}
           title = "Logout"/>
           <Fab
@@ -78,11 +103,14 @@ const AppNavigator = createStackNavigator({
 
 const App = createAppContainer(AppNavigator);
 
-const NavWrapper = ({loading , user}) => {
-if (loading) return <ActivityIndicator size="large"/>;;
-if (!user) return <Login />
-  return <App screenProps={{user}}/>
-}
+class NavWrapper extends Component {
+  render() {
+    const { loading , user } = this.props;
+    if (loading) return <ActivityIndicator size="large"/>
+    if (!user) return <Login />
+    return <App screenProps={{user}}/>
+  }
+} 
 
 const userQuery = gql `
   query userQuery {
@@ -97,4 +125,4 @@ const userQuery = gql `
   }
 `
 
-export default graphql(userQuery, { props:({data}) => ({...data})})(NavWrapper);
+export default graphql(userQuery, { props: ({data}) => data })(NavWrapper);
