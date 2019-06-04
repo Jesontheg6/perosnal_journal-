@@ -28,8 +28,8 @@ class NewPost extends Component {
 		// let encryptedPost = encrypt(body, generateKey("12345", ""))
 		newPost({
 			variables: {
-				title: encryptData(title),
-				body: encryptData(body),
+				title,
+				body,
 				userId: screenProps.user.id
 			}
 		})
