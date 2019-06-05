@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "journal",
-    "slug": "journal",
+    "name": "Hashnotes",
+    "slug": "Hashnotes",
+    "description":"Private personal journaling app",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": [
