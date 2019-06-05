@@ -28,7 +28,7 @@ class Posts extends Component {
       return { ...item, title: decryptData(item.title) };
     }).filter(item => item.title);
     if (decryptedPosts.length !== posts.length) {
-      Alert.alert("Error", "Some data could not be decrypted. Please, check your passphrase.");
+      Alert.alert("Error", "Journal could not be decrypted. Please check your passphrase.");
       clearPassphrase();
     }
     this.setState({ posts: decryptedPosts });
